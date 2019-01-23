@@ -7,5 +7,7 @@
         public string Property2 { get; set; }
 
         public long Property3 { get; set; }
+
+        public bool Property4 { get; set; }
     }
 }

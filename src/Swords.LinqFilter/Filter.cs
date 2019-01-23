@@ -54,6 +54,20 @@
             return this;
         }
 
+        public Filter<TEntity> Append(string filterName, Func<TEntity, bool> partialCriteria)
+        {
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                bool byEqualsName(FilterValue filter) => filter.Name.Equals(filterName, StringComparison.InvariantCultureIgnoreCase);
+                if (this.filterValueCollection.Any(byEqualsName))
+                {
+                    return this.Append(entity => partialCriteria(entity));
+                }
+            }
+
+            return this;
+        }
+
         public Filter<TEntity> Append(string filterName, Func<TEntity, string, bool> partialCriteria)
         {
             if (!string.IsNullOrEmpty(filterName))

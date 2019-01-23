@@ -65,7 +65,8 @@
         {
             var collection = GetStubCollection();
             var sut = CreateFilter<Stub>();
-            var result = sut.Append("NonExistingFilter", (Stub entity, string value) => false).ApplyTo(collection);
+            var result = sut.Append("NonExistingFilter", (Stub entity, string value) => false)
+                            .ApplyTo(collection);
             Assert.AreEqual(collection, result);
         }
 
@@ -74,7 +75,8 @@
         {
             var collection = GetStubCollection();
             var sut = CreateFilter<Stub>();
-            var result = sut.Append("NonExistingFilter", (Stub entity, string[] value) => false).ApplyTo(collection);
+            var result = sut.Append("NonExistingFilter", (Stub entity, string[] value) => false)
+                            .ApplyTo(collection);
             Assert.AreEqual(collection, result);
         }
 
@@ -87,6 +89,17 @@
             var result = sut.Append(x => x.Property2 == "Class")
                             .ApplyTo(collection);
             Assert.AreEqual(1, result.Count());
+        }
+
+        [TestMethod]
+        public void Return_FilteredCollection_When_SearchByBooleanPropertyValue()
+        {
+            var collection = GetStubCollection();
+
+            var sut = CreateFilter<Stub>();
+            var result = sut.Append(x => x.Property4)
+                            .ApplyTo(collection);
+            Assert.AreEqual(2, result.Count());
         }
 
         [TestMethod]
@@ -117,6 +130,40 @@
                             .ApplyTo(collection);
             Assert.AreEqual(1, result.Count());
             Assert.AreEqual(collection.First(x => x.Property2 == filterValue.Value), result.First());
+        }
+
+        [TestMethod]
+        public void Return_SameCollection_When_FilterNameIsNotFound_And_PropertyIsBoolean()
+        {
+            var filterValue = new FilterValue
+            {
+                Name = "FilterProperty2",
+                Value = "Class"
+            };
+
+            var collection = GetStubCollection();
+
+            var sut = CreateFilter<Stub>(filterValue);
+            var result = sut.Append("NonExistingFilter", entity => entity.Property4)
+                            .ApplyTo(collection);
+            Assert.AreEqual(collection, result);
+        }
+
+        [TestMethod]
+        public void Return_FilteredCollection_When_SearchByExistingFilterValueByBooleanProperty()
+        {
+            var filterValue = new FilterValue
+            {
+                Name = "FilterProperty2",
+                Value = "Class"
+            };
+
+            var collection = GetStubCollection();
+
+            var sut = CreateFilter<Stub>(filterValue);
+            var result = sut.Append("FilterProperty2", entity => entity.Property4)
+                            .ApplyTo(collection);
+            Assert.AreEqual(2, result.Count());
         }
 
         [TestMethod]
@@ -174,9 +221,9 @@
         protected static IQueryable<Stub> GetStubCollection()
             => new List<Stub>
             {
-                new Stub { Property1 = 1, Property2 = "Name", Property3 = -1 },
-                new Stub { Property1 = 2, Property2 = "Class", Property3 = 50 },
-                new Stub { Property1 = 3, Property2 = "Bug", Property3 = 150000 }
+                new Stub { Property1 = 1, Property2 = "Name", Property3 = -1, Property4 = false },
+                new Stub { Property1 = 2, Property2 = "Class", Property3 = 50, Property4 = true },
+                new Stub { Property1 = 3, Property2 = "Bug", Property3 = 150000, Property4 = true }
             }.AsQueryable();
 
         protected List<FilterValue> GetAutoExcludedFilterValueCollection()
