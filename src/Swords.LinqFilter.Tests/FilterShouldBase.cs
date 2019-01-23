@@ -61,6 +61,24 @@
         }
 
         [TestMethod]
+        public void Return_SameCollection_When_FilterNameIsNotFound_And_UseFilterValueWithSingleValue()
+        {
+            var collection = GetStubCollection();
+            var sut = CreateFilter<Stub>();
+            var result = sut.Append("NonExistingFilter", (Stub entity, string value) => false).ApplyTo(collection);
+            Assert.AreEqual(collection, result);
+        }
+
+        [TestMethod]
+        public void Return_SameCollection_When_FilterNameIsNotFound_And_UseFilterValueWithMultipleValues()
+        {
+            var collection = GetStubCollection();
+            var sut = CreateFilter<Stub>();
+            var result = sut.Append("NonExistingFilter", (Stub entity, string[] value) => false).ApplyTo(collection);
+            Assert.AreEqual(collection, result);
+        }
+
+        [TestMethod]
         public void Return_FilteredCollection_When_SearchByExactMatch()
         {
             var collection = GetStubCollection();
