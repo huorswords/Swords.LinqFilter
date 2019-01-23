@@ -141,7 +141,8 @@
             var collection = GetStubCollection();
 
             var sut = CreateFilter<Stub>(filterValueCollection);
-            var result = sut.Append("FilterProperty2", (entity, values) => values.Contains(entity.Property2, StringComparison.InvariantCultureIgnoreCase))
+            var result = sut.Append("FilterProperty2",
+                                    (Stub entity, string[] values) => values.Any(value => value.Equals(entity.Property2, StringComparison.InvariantCultureIgnoreCase)))
                             .ApplyTo(collection);
             Assert.AreEqual(2, result.Count());
         }
