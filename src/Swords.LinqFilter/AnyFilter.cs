@@ -6,8 +6,6 @@
     public class AnyFilter<TEntity> : Filter<TEntity>
         where TEntity : class
     {
-        private IEnumerable<FilterValue> filterValueCollection;
-
         public AnyFilter()
             : base()
         {

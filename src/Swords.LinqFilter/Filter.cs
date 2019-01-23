@@ -9,9 +9,10 @@
     {
         private Func<TEntity, bool> criteria;
 
-        private List<FilterValue> filterValueCollection;
+        private readonly List<FilterValue> filterValueCollection;
 
         protected Filter()
+            : this(new List<FilterValue>())
         {
         }
 
